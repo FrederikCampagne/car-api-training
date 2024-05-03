@@ -1,0 +1,180 @@
+package com.example.car;
+
+import com.example.car.dto.StudentDto;
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.UUID;
+
+import static io.restassured.RestAssured.post;
+import static org.hamcrest.Matchers.equalTo;
+
+public class StudentAPITest {
+
+    private final static String NAME_BEFORE_PUT = "Mo";
+    private final static String NAME_AFTER_PUT = "Fred";
+    private final static String STUDENT_DTO_FRED = "{ \n" +
+            "   \"id\":null,\n" +
+            "   \"name\":\"Fred\",\n" +
+            "   \"graduated\":true,\n" +
+            "   \"passportNumber\":\"HUDFHSDF\"\n" +
+            "}";
+    private final static String STUDENT_MO = "{ \n" +
+            "   \"id\":null,\n" +
+            "   \"name\":\"Mo\",\n" +
+            "   \"graduated\":true,\n" +
+            "   \"passportNumber\":\"1234567\"\n" +
+            "}";
+    private String studentToPut;
+
+
+// Valideren Response met een GET request
+
+    @Test
+    public void validateResponse() {
+        
+        RestAssured
+                .given()
+                    .header("Content-Type", "application/json")
+                .when()
+                    .get("http://localhost:8888/api/SchoolAPI/v1/Students")
+                .then()
+                    .statusCode(200);
+
+    }
+//POST
+
+    @Test
+    public void studentIdFromResponse_shouldBePresentInDatabase_whenPost(){
+
+        JsonPath studentResponse =
+                RestAssured
+                .given()
+                    .header("Content-Type", "application/json")
+                    .body(STUDENT_MO)
+                .when()
+                    .post("http://localhost:8888/api/SchoolAPI/v1/Students")
+                .then()
+                    .extract()
+                    .jsonPath();
+
+// controle van de post met een get request
+        RestAssured
+            .given()
+                .header("Content-Type", "application/json")
+            .when()
+                .get("http://localhost:8888/api/SchoolAPI/v1/Students/"+ studentResponse.get("id"))
+            .then()
+                .statusCode(200);
+    }
+
+////////////// Delete
+
+    @Test
+    public void student_ShouldNotBeFound_whenDeleting(){
+
+        JsonPath studentResponse =
+                RestAssured
+                        .given()
+                            .header("Content-Type", "application/json")
+                            .body(STUDENT_MO)
+                        .when()
+                            .post("http://localhost:8888/api/SchoolAPI/v1/Students")
+                        .then()
+                            .extract()
+                            .jsonPath();
+
+        RestAssured
+                .given()
+                    .header("Content-Type", "application/json")
+                .when()
+                    .get("http://localhost:8888/api/SchoolAPI/v1/Students/"+ studentResponse.get("id"))
+                .then()
+                    .statusCode(200);
+
+//      Delete student
+        deleteStudent(studentResponse);
+
+//       Ceck of student niet voorkomt in database
+
+        RestAssured
+                .given()
+                    .header("Content-Type", "application/json")
+                .when()
+                    .get("http://localhost:8888/api/SchoolAPI/v1/Students/"+ studentResponse.get("id"))
+                .then()
+                    .statusCode(404);
+    }
+
+    private JsonPath deleteStudent(JsonPath studentResponse) {
+        return RestAssured
+                .given()
+                    .header("Content-Type", "application/json")
+                    .delete("http://localhost:8888/api/SchoolAPI/v1/Students/"+studentResponse.get("id"))
+                .then()
+                    .extract()
+                    .jsonPath();
+    }
+//Stap 1
+// PUT request
+// We beginnen eerst met een post van een nieuw student
+    @Test
+    public void student_ShouldBeUpdated_whenPUT(){
+
+        JsonPath studentResponse =
+                RestAssured
+                        .given()
+                            .header("Content-Type", "application/json")
+                            .body(STUDENT_MO)
+                        .when()
+                            .post("http://localhost:8888/api/SchoolAPI/v1/Students")
+                        .then()
+                            .extract()
+                            .jsonPath();
+
+
+
+//stap 3
+// Stdent creeëren en vastleggen in variabele studentToPut
+        studentToPut = createStudentDtoForPut(studentResponse);
+
+// stap 5
+// Student update met een PUT request
+        putAndReturnAsObject(studentToPut);
+
+        RestAssured
+                .given()
+                    .header("Content-Type", "application/json")
+                .when()
+                    .get("http://localhost:8888/api/SchoolAPI/v1/Students/"+ studentResponse.get("id"))
+                .then()
+                    .assertThat()
+                    .body("name", equalTo(NAME_AFTER_PUT));
+    }
+//    Stap 2
+//    Functie om een nieuw student aan te maken. Deze verwacht de response van de post als input parameter
+
+    private String createStudentDtoForPut(JsonPath studentResponse) {
+        return "{ \n" +
+                "   \"id\":" +"\""+studentResponse.get("id")+"\""+ ",\n" +
+                "   \"name\":\"Fred\",\n" +
+                "   \"graduated\":true,\n" +
+                "   \"passportNumber\":\"1234567\"\n" +
+                "}";
+    }
+
+//stap 4
+    private JsonPath putAndReturnAsObject(String studentToPut) {
+         return RestAssured
+                .given()
+                    .header("Content-Type", "application/json")
+                    .body(studentToPut)
+                    .put("http://localhost:8888/api/SchoolAPI/v1/Students/")
+                .then()
+                    .extract()
+                    .jsonPath();
+    }
+}
+

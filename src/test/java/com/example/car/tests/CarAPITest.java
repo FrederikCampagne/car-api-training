@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 public class CarAPITest {
 
@@ -40,7 +40,7 @@ public class CarAPITest {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("currentOwner", hasItems("Frederik Campagne"));
+                .body("$[0].currentOwner", equalTo("Frederik Campagne"));
 
     }
 }

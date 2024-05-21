@@ -23,10 +23,11 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'junit:junit:4.13.1'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
     compile('javax.xml.bind:jaxb-api:2.3.0')
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.5'
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
 
@@ -39,6 +40,7 @@ dependencies {
     compile('io.swagger:swagger-jersey2-jaxrs:1.5.8')
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
     testImplementation 'org.hamcrest:hamcrest:2.1'
+    testImplementation 'com.h2database:h2'
 
 
 }

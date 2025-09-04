@@ -16,8 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +39,7 @@ public class CarService {
     CarMapper converter = new CarMapper();
 
     @GET
-    @Produces(MediaType.APPLICATION_STREAM_JSON_VALUE)
+    @Produces(MediaType.APPLICATION_JSON_VALUE)
     public Response getCars() {
         List<Car> retrieveAllCars = Arrays.asList(Iterables.toArray(carRepository.findAll(), Car.class));
         List<CarDto> carDtos = converter.convertToDtoList(retrieveAllCars);
@@ -48,7 +48,7 @@ public class CarService {
 
 
     @GET
-    @Produces(MediaType.APPLICATION_STREAM_JSON_VALUE)
+    @Produces(MediaType.APPLICATION_JSON_VALUE)
     @Path("/{id}")
     @ApiOperation(value = "Retrieve Car", response = CarDto.class)
     public Response getCarById(@PathParam(value = "id") String id) {

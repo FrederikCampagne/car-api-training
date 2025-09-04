@@ -9,12 +9,12 @@ import com.example.car.repo.CarOwnerRepository;
 import com.example.car.repo.CarRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,7 +34,7 @@ public class CarOwnersService {
     CarMapper carConverter = new CarMapper();
 
     @GET
-    @Produces(MediaType.APPLICATION_STREAM_JSON_VALUE)
+    @Produces(MediaType.APPLICATION_JSON_VALUE)
     @Path("/{carId}")
     @ApiOperation(value = "Retrieve (previous) owners of a car", response = CarOwnerDto[].class)
     public Response getCarOwnersById(@PathParam(value = "carId") String id) {

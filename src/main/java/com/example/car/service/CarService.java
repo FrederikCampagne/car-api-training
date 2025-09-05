@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -26,17 +27,16 @@ import java.util.UUID;
 
 @Component
 @Service
+@AllArgsConstructor
 @Path("/cars")
 @Api(value = "Cars")
 public class CarService {
 
-    @Autowired
     CarRepository carRepository;
 
-    @Autowired
     CarOwnerRepository carOwnerRepository;
 
-    CarMapper converter = new CarMapper();
+    private final CarMapper converter = new CarMapper();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON_VALUE)

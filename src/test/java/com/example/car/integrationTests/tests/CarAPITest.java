@@ -1,6 +1,6 @@
-package com.example.car.tests;
+package com.example.car.integrationTests.tests;
 
-import com.example.car.clients.CarClient;
+import com.example.car.integrationTests.clients.CarClient;
 import com.example.car.dto.CarDto;
 import io.restassured.response.Response;
 import org.junit.Assert;
@@ -24,6 +24,8 @@ public class CarAPITest {
     public void endpoint_shouldReturnCarWithBrandToyota_whenGet() {
 
         List<CarDto> cars = carClient.getCars();
+
+        Assert.assertEquals("Frederik Campagne", cars.get(0).getCurrentOwner());
 
         cars.stream().forEach(car -> {
             Assert.assertEquals("Toyota", car.getBrand());

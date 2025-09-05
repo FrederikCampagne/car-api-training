@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 

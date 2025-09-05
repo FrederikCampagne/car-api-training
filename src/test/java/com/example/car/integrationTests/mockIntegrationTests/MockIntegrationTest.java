@@ -1,4 +1,4 @@
-package com.example.car.mockIntegrationTests;
+package com.example.car.integrationTests.mockIntegrationTests;
 
 import com.example.car.CarRegistrationApplication;
 import com.example.car.config.AppResourceConfig;

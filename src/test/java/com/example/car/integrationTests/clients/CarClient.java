@@ -1,4 +1,4 @@
-package com.example.car.clients;
+package com.example.car.integrationTests.clients;
 
 import com.example.car.dto.CarDto;
 import io.restassured.RestAssured;

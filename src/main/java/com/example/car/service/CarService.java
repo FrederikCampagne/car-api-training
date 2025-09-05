@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class CarService {
     @GET
     @Produces(MediaType.APPLICATION_JSON_VALUE)
     public Response getCars() {
-        List<Car> retrieveAllCars = Arrays.asList(Iterables.toArray(carRepository.findAll(), Car.class));
+        List<Car> retrieveAllCars = carRepository.findAll();
         List<CarDto> carDtos = converter.convertToDtoList(retrieveAllCars);
         return Response.ok(carDtos).build();
     }

@@ -18,6 +18,10 @@ import org.springframework.stereotype.Service;
 
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +31,7 @@ import java.util.UUID;
 @Component
 @Service
 @AllArgsConstructor
-@Path("/cars")
-@Api(value = "Cars")
+@RequestMapping("/cars")
 public class CarService {
 
     CarRepository carRepository;
@@ -37,20 +40,30 @@ public class CarService {
 
     private final CarMapper converter = new CarMapper();
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/",
+            produces = { "application/json" },
+            consumes = { "application/json" }
+    )
     public Response getCars() {
         List<Car> retrieveAllCars = carRepository.findAll();
         List<CarDto> carDtos = converter.convertToDtoList(retrieveAllCars);
         return Response.ok(carDtos).build();
     }
 
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON_VALUE)
-    @Path("/{id}")
-    @ApiOperation(value = "Retrieve Car", response = CarDto.class)
-    public Response getCarById(@PathParam(value = "id") String id) {
+//
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON_VALUE)
+//    @Path("/{id}")
+//    @ApiOperation(value = "Retrieve Car", response = CarDto.class)
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/{id}",
+            produces = { "application/json" },
+            consumes = { "application/json" }
+    )
+    public Response getCarById(@PathVariable(value = "id") String id) {
         Optional<Car> car = carRepository.findById(UUID.fromString(id));
         return car.isPresent()
                 ? Response.ok(converter.convertToDto(car.get()))
@@ -58,12 +71,12 @@ public class CarService {
                 : Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON_VALUE)
-    @Produces(MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Create Car")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created", response = CarDto.class)})
+    @RequestMapping(
+            method = RequestMethod.POST,
+            value = "/",
+            produces = { "application/json" },
+            consumes = { "application/json" }
+    )
     public Response saveStudent(CarDto car) {
         car.setId(null);
         Car carEntity = converter.convertToEntity(car);
@@ -76,12 +89,12 @@ public class CarService {
                 .build();
     }
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON_VALUE)
-    @Produces(MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Car updated", response = CarDto.class),
-            @ApiResponse(code = 404, message = "Not Found")})
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            value = "/{id}",
+            produces = { "application/json" },
+            consumes = { "application/json" }
+    )
     public Response updateStudent(CarDto car) {
         Optional<Car> carEntity = carRepository.findById(car.getId());
         if (carEntity.isPresent()) {
@@ -99,12 +112,12 @@ public class CarService {
         }
     }
 
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON_VALUE)
-    @Path("/{id}")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Deleted", response = String.class),
-            @ApiResponse(code = 404, message = "Not Found")})
+    @RequestMapping(
+            method = RequestMethod.DELETE,
+            value = "/{id}",
+            produces = { "application/json" },
+            consumes = { "application/json" }
+    )
     public Response deleteStudent(@PathParam(value = "id") String id) {
         Optional<Car> studentR = carRepository.findById(UUID.fromString(id));
 
